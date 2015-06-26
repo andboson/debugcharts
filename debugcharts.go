@@ -109,6 +109,20 @@ func (s *server) gatherData() {
 	}
 }
 
+func InitHttpRouter(R *httprouter.Router) {
+	R.HandlerFunc("GET","/debug/charts/data-feed", s.dataFeedHandler)
+	R.HandlerFunc("GET","/debug/charts/data", dataHandler)
+	R.HandlerFunc("GET", "/debug/charts/", handleAsset("static/index.html"))
+	R.HandlerFunc("GET","/debug/charts/main.js", handleAsset("static/main.js"))
+
+	// preallocate arrays in data, helps save on reallocations caused by append()
+	// when maxCount is large
+	data.BytesAllocated = make([][]uint64, 0, maxCount)
+	data.GcPauses = make([][]uint64, 0, maxCount)
+
+	go s.gatherData()
+}
+
 func init() {
 	http.HandleFunc("/debug/charts/data-feed", s.dataFeedHandler)
 	http.HandleFunc("/debug/charts/data", dataHandler)
