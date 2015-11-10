@@ -28,6 +28,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/mkevac/debugcharts/bindata"
+	"github.com/julienschmidt/httprouter"
 )
 
 type update struct {
